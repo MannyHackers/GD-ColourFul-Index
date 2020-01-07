@@ -7,7 +7,7 @@ document.write('<style>.mdui-appbar .mdui-toolbar{height:56px;font-size:1pc}.mdu
 // Initialization page，And load the necessary resources
 function init(){
     document.siteName = $('title').html();
-    $('body').addClass("mdui-theme-primary-blue-grey mdui-theme-accent-blue");
+    $('body').addClass("mdui-theme-primary-green-a700 mdui-theme-accent-green");
     var html = `
 <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
 <header class="mdui-appbar mdui-color-theme"> 
@@ -387,6 +387,8 @@ function markdown(el, data){
         $(el).show().html(html);
     }
 }
+
+document.write('<script src="//cdn.jsdelivr.net/gh/kulokenci/goindex-drive@2.0/cari.js"></script>');
 
 window.onpopstate = function(){
     var path = window.location.pathname;
