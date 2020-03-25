@@ -1,12 +1,16 @@
 var authConfig = {
-	"siteName": "Google Drive", // Site Name
-	"root_pass": "", // Root Password
-	"version": "2.0", // Site Version
-	"theme": "material", // material  classic 
-    "client_id": "202264815644.apps.googleusercontent.com", // Google Client ID
-    "client_secret": "X4Z3ca8xfWDb1Voo-F9a7ZxJ", // Google Client Secret
-	"refresh_token": "", // Refresh token    "root": "root" // Root directory
-	"root": "root" // Root directory
+  "siteName": "GoIndex Drive", // Site Name
+  "root_pass": "",  // Site Password
+  "version" : "2.3", // version
+  "theme" : "material", // material  classic
+  "main_color": "blue",
+  "accent_color": "blue",
+  "dark_theme": false, //make sure you set main color
+  "search": false,
+  "client_id": "202264815644.apps.googleusercontent.com", // Google Client ID
+  "client_secret": "X4Z3ca8xfWDb1Voo-F9a7ZxJ", // Google Client Secret
+  "refresh_token": "", // Authorization token
+  "root": "" // Root directory ID
 };
 
 var gd;
@@ -19,8 +23,9 @@ var html = `
   <meta name="robots" content="noindex">
   <meta name="googlebot" content="noindex">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no"/>
-  <title>${authConfig.siteName}</title>
   <link rel="icon" href="//rawcdn.githack.com/neoascetic/rawgithack/4558441/sushi.png">
+  <title>${authConfig.siteName}</title>
+  <script>var main_color = "${authConfig.main_color}";var accent_color = "${authConfig.accent_color}";var dark = ${authConfig.dark};var search = ${authConfigsearch};</script>
   <script src="//cdn.jsdelivr.net/combine/gh/jquery/jquery@3.2/dist/jquery.min.js,gh/kulokenci/goindex-drive@${authConfig.version}/app.js"></script>
   </head>
 <body>
