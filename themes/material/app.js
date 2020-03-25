@@ -4,7 +4,7 @@ document.write('<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/mdui@0.4.3/d
 document.write('<script src="//cdn.jsdelivr.net/npm/markdown-it@10.0.0/dist/markdown-it.min.js"></script>');
 document.write('<style>.mdui-appbar .mdui-toolbar{height:56px;font-size:1pc}.mdui-toolbar>*{padding:0 6px;margin:0 2px}.mdui-toolbar>i{opacity:.5}.mdui-toolbar>.mdui-typo-headline{padding:0 1pc 0 0}.mdui-toolbar>i{padding:0}.mdui-toolbar>a:hover,a.active,a.mdui-typo-headline{opacity:1}.mdui-container{max-width:980px}.mdui-list-item{transition:none}.mdui-list>.th{background-color:initial}.mdui-list-item>a{width:100%;line-height:3pc}.mdui-list-item{margin:2px 0;padding:0}.mdui-toolbar>a:last-child{opacity:1}@media screen and (max-width:980px){.mdui-list-item .mdui-text-right{display:none}.mdui-container{width:100%!important;margin:0}.mdui-toolbar>.mdui-typo-headline,.mdui-toolbar>a:last-child,.mdui-toolbar>i:first-child{display:block}}</style>');
 if(dark){document.write('<style>* {box-sizing: border-box}body{color:rgba(255,255,255,.87);background-color:#333232}.mdui-theme-primary-'+main_color+' .mdui-color-theme{background-color:#232427!important}</style>');}
-if(search){document.write('<style>#myInput{background-image:url(https://cdn.jsdelivr.net/gh/kulokenci/goindex-drive@2.0/cari.png);background-position:10px 12px;background-repeat:no-repeat;width:100%;font-size:16px;padding:12px 20px 12px 40px;border:1px solid #ddd;margin-bottom:12px}#myUL{list-style-type:none;padding:0;margin:0}#myUL li a{border:1px solid #ddd;margin-top:-1px;background-color:#f6f6f6;padding:12px;text-decoration:none;font-size:18px;color:#000;display:block}#myUL li a:hover:not(.header){background-color:#eee}</style>');}
+if(search){document.write('<style>#myInput{background-image:url(https://cdn.jsdelivr.net/gh/kulokenci/goindex-drive@2.3/cari.png);background-position:10px 12px;background-repeat:no-repeat;width:100%;font-size:16px;padding:12px 20px 12px 40px;border:1px solid #ddd;margin-bottom:12px}#myUL{list-style-type:none;padding:0;margin:0}#myUL li a{border:1px solid #ddd;margin-top:-1px;background-color:#f6f6f6;padding:12px;text-decoration:none;font-size:18px;color:#000;display:block}#myUL li a:hover:not(.header){background-color:#eee}</style>');}
 // Initialize the page and load the necessary resources
 function init(){
     document.siteName = $('title').html();
@@ -425,7 +425,7 @@ function markdown(el, data){
     }
 }
 if(search){
-    document.write('<script src="//cdn.jsdelivr.net/gh/kulokenci/goindex-drive@2.0/cari.js"></script>');
+    document.write('<script src="//cdn.jsdelivr.net/gh/kulokenci/goindex-drive@2.3/cari.js"></script>');
 }
 // Listen for fallback events
 window.onpopstate = function(){
