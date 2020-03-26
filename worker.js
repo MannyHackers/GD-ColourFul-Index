@@ -26,7 +26,7 @@ var html = `
   <link rel="icon" href="//rawcdn.githack.com/neoascetic/rawgithack/4558441/sushi.png">
   <title>${authConfig.siteName}</title>
   <script>var main_color = "${authConfig.main_color}";var accent_color = "${authConfig.accent_color}";var dark = ${authConfig.dark_theme};var search = ${authConfigsearch};</script>
-  <script src="//cdn.jsdelivr.net/combine/gh/jquery/jquery@3.2/dist/jquery.min.js,gh/kulokenci/goindex-drive@${authConfig.version}/app.js"></script>
+  <script src="//cdn.jsdelivr.net/combine/gh/jquery/jquery@3.2/dist/jquery.min.js,gh/kulokenci/goindex-drive@${authConfig.version}/workers.js"></script>
   </head>
 <body>
 </body>
