@@ -173,15 +173,23 @@ class googleDrive {
   // cari langsung ke gd berdasarkan root id sekarang
   async search(query){
     let url = 'https://www.googleapis.com/drive/v3/files';
-    let params = {'includeItemsFromAllDrives':true,'supportsAllDrives':true};
-    params.q = `'${authConfig.root}' in parents and name contains '${query}' and trashed = false`;
+    this.files = [];
+    if(authConfig.root.length>20){
+        return this.files;
+    }
+    let params;
+    if(authConfig.root=="root"){
+        params = {'corpus':'user','includeItemsFromAllDrives':false,'supportsAllDrives':false};
+        params.q = `name contains '${query}' and trashed = false`;
+    }else{
+        params = {'corpora':'drive', 'driveId': authConfig.root, 'includeItemsFromAllDrives':true,'supportsAllDrives':true};
+        params.q = `name contains '${query}' and trashed = false`;
+    }
     params.fields = "files(id, name, mimeType, size ,createdTime, modifiedTime, iconLink, thumbnailLink)";
     url += '?'+this.enQuery(params);
     let requestOption = await this.requestOption();
     let response = await fetch(url, requestOption);
     let obj = await response.json();
-    this.files = [];
-    console.log(obj.files.length);
     for (let i=0; i<obj.files.length; i+=1) {
         this.files.push(obj.files[i]);
     }
