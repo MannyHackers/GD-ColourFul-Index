@@ -76,11 +76,17 @@ async function handleRequest(request) {
     return unauthorized();
   }
 
-  if(request.method == 'POST'){
-    return apiRequest(request);
+  let url = new URL(request.url);
+  let query = url.searchParams.get('q');
+
+  if (request.method == 'POST'){
+    if(query != null){
+        return apiSearchRequest(query);
+    }else{
+        return apiRequest(request);
+    }
   }
 
-  let url = new URL(request.url);
   let path = url.pathname;
   let action = url.searchParams.get('a');
 
@@ -107,6 +113,17 @@ async function apiRequest(request) {
     let file = await gd.file(path);
     let range = request.headers.get('Range');
     return new Response(JSON.stringify(file));
+  }
+}
+
+async function apiSearchRequest(q) {
+  let option = {status:200,headers:{'Access-Control-Allow-Origin':'*'}}
+  let notfound = []
+  let list = await gd.search(q);
+  if(list.length == 0){
+      return new Response(JSON.stringify(notfound),option);
+  }else{
+      return new Response(JSON.stringify(list),option);
   }
 }
 
@@ -151,6 +168,24 @@ class googleDrive {
     let obj = await response.json();
     console.log(obj);
     return obj.files[0];
+  }
+
+  // cari langsung ke gd berdasarkan root id sekarang
+  async search(query){
+    let url = 'https://www.googleapis.com/drive/v3/files';
+    let params = {'includeItemsFromAllDrives':true,'supportsAllDrives':true};
+    params.q = `'${authConfig.root}' in parents and name contains '${query}' and trashed = false`;
+    params.fields = "files(id, name, mimeType, size ,createdTime, modifiedTime, iconLink, thumbnailLink)";
+    url += '?'+this.enQuery(params);
+    let requestOption = await this.requestOption();
+    let response = await fetch(url, requestOption);
+    let obj = await response.json();
+    this.files = [];
+    console.log(obj.files.length);
+    for (let i=0; i<obj.files.length; i+=1) {
+        this.files.push(obj.files[i]);
+    }
+    return this.files;
   }
 
   // Cache via reqeust cache
