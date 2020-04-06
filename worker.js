@@ -1,7 +1,9 @@
 var authConfig = {
   "siteName": "GoIndex - Drive", // Site Name
-  "root_pass": "",  // Site Password
   "version" : "2.3", // version
+  "basic_auth": false, // change to Basic authentication
+  "user": "",
+  "pass": "",
   "theme" : "material", // material  classic
   "main_color": "light-green",
   "accent_color": "green",
@@ -33,6 +35,35 @@ addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request));
 });
 
+function unauthorized() {
+  return new Response('401 NOT AUTHORIZED', {
+    headers: {
+      'WWW-Authenticate': 'Basic realm="Access to GoIndex Drive", charset="UTF-8"',
+      'Access-Control-Allow-Origin': '*'
+    },
+    status: 401
+  });
+}
+
+function parseBasicAuth(auth) {
+  try {
+    return atob(auth.split(' ').pop()).split(':');
+  } catch (e) {
+    return [];
+  }
+}
+
+function doBasicAuth(request) {
+  const auth = request.headers.get('Authorization');
+
+  if (!auth || !/^Basic [A-Za-z0-9._~+/-]+=*$/i.test(auth)) {
+    return false;
+  }
+
+  const [user, pass] = parseBasicAuth(auth);
+  return user === authConfig.user && pass === authConfig.pass;
+}
+
 /**
 * Fetch and log a request
 * @param {Request} request
@@ -40,6 +71,10 @@ addEventListener('fetch', event => {
 async function handleRequest(request) {
   if(gd == undefined){
     gd = new googleDrive(authConfig);
+  }
+
+  if (authConfig.basic_auth && !doBasicAuth(request)) {
+    return unauthorized();
   }
 
   if(request.method == 'POST'){
@@ -53,9 +88,6 @@ async function handleRequest(request) {
   if(path.substr(-1) == '/' || action != null){
     return new Response(html,{status:200,headers:{'Content-Type':'text/html; charset=utf-8'}});
   }else{
-    if(path.split('/').pop().toLowerCase() == ".password"){
-       return new Response("",{status:404});
-    }
     let file = await gd.file(path);
     let range = request.headers.get('Range');
     return gd.down(file.id, range);
@@ -66,25 +98,10 @@ async function handleRequest(request) {
 async function apiRequest(request) {
   let url = new URL(request.url);
   let path = url.pathname;
-
+  console.log(path);
   let option = {status:200,headers:{'Access-Control-Allow-Origin':'*'}}
-
+  
   if(path.substr(-1) == '/'){
-    // check password
-    let password = await gd.password(path);
-    console.log("dir password", password);
-    if(password != undefined && password != null && password != ""){
-      try{
-        var obj = await request.json();
-      }catch(e){
-        var obj = {};
-      }
-      console.log(password,obj);
-      if(password.replace("\n", "") != obj.password){
-        let html = `{"error": {"code": 401,"message": "password error."}}`;
-        return new Response(html,option);
-      }
-    }
     let list = await gd.list(path);
     return new Response(JSON.stringify(list),option);
   }else{
@@ -99,11 +116,7 @@ class googleDrive {
       this.authConfig = authConfig;
       this.paths = [];
       this.files = [];
-      this.passwords = [];
       this.paths["/"] = authConfig.root;
-      if(authConfig.root_pass != ""){
-        this.passwords["/"] = authConfig.root_pass;
-      }
       this.accessToken();
   }
 
@@ -160,26 +173,6 @@ class googleDrive {
     return obj
   }
 
-  async password(path){
-    if(this.passwords[path] !== undefined){
-      return this.passwords[path];
-    }
-
-    console.log("load",path,".password",this.passwords[path]);
-
-    let file = await gd.file(path+'.password');
-    if(file == undefined){
-      this.passwords[path] = null;
-    }else{
-      let url = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`;
-      let requestOption = await this.requestOption();
-      let response = await this.fetch200(url, requestOption);
-      this.passwords[path] = await response.text();
-    }
-
-    return this.passwords[path];
-  }
-
   async _ls(parent){
     console.log("_ls",parent);
 
@@ -190,7 +183,7 @@ class googleDrive {
     let pageToken;
     let obj;
     let params = {'includeItemsFromAllDrives':true,'supportsAllDrives':true};
-    params.q = `'${parent}' in parents and trashed = false AND name !='.password'`;
+    params.q = `'${parent}' in parents and trashed = false`;
     params.orderBy= 'folder,name,modifiedTime desc';
     params.fields = "nextPageToken, files(id, name, mimeType, size , modifiedTime)";
     params.pageSize = 1000;
