@@ -83,8 +83,8 @@ function list(path){
 	content += `
 	<div id="head_md" class="mdui-typo" style="display:none;padding: 20px 0;"></div>`;
     if(search){
-        if(dark){content += `<div class="mdui-textfield"><input class="mdui-textfield-input mdui-text-color-white-text" id="searchInput" type="text" placeholder="Type to search.."></input></div>`;
-        }else{content += `<div class="mdui-textfield"><input class="mdui-textfield-input" id="searchInput" type="text" placeholder="Type to search.."></input></div>`;}
+        if(dark){content += `<div class="mdui-textfield"><input class="mdui-textfield-input mdui-text-color-white-text" id="searchInput" onkeyup="searchOnlyActiveDir()" type="text" placeholder="Type to search.."></input></div>`;
+        }else{content += `<div class="mdui-textfield"><input class="mdui-textfield-input" id="searchInput" onkeyup="searchOnlyActiveDir()" type="text" placeholder="Type to search.."></input></div>`;}
     }
 	content += `<div class="mdui-row"> 
 	  <ul class="mdui-list"> 
@@ -111,27 +111,6 @@ function list(path){
 	 <div id="readme_md" class="mdui-typo" style="display:none; padding: 20px 0;"></div>
 	`;
 	$('#content').html(content);
-    $('#searchInput').keyup(function(){
-        var p = '/', q = $('#searchInput').val();
-        $('#list').html(`<div class="mdui-progress"><div class="mdui-progress-indeterminate"></div></div>`);
-        $('#readme_md').hide().html('');
-        $('#head_md').hide().html('');
-        if(q!="" && q!=null){
-            $.post('?q='+q, function(data,status){
-                var obj = jQuery.parseJSON('{"files": '+data+'}');
-                if(typeof obj != 'null'){
-                    list_files(p, obj.files);
-                }
-            });
-        }else{
-            $.post(path, function(data,status){
-                var obj = jQuery.parseJSON(data);
-                if(typeof obj != 'null'){
-                    list_files(path,obj.files);
-                }
-            });
-        }
-    });
     $('#list').html(`<div class="mdui-progress"><div class="mdui-progress-indeterminate"></div></div>`);
     $('#readme_md').hide().html('');
     $('#head_md').hide().html('');
@@ -372,6 +351,10 @@ function file_image(path){
 	$('#content').html(content);
 }
 
+function searchOnlyActiveDir() {
+	var e, t, n, l;
+	for (e = document.getElementById("searchInput").value.toUpperCase(), t = document.getElementById("list").getElementsByTagName("li"), l = 0; l < t.length; l++)((n = t[l].getElementsByTagName("a")[0]).textContent || n.innerText).toUpperCase().indexOf(e) > -1 ? t[l].style.display = "" : t[l].style.display = "none"
+}
 
 // time conversion
 function utc2jakarta(utc_datetime) {

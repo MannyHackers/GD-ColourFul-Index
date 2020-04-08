@@ -77,14 +77,9 @@ async function handleRequest(request) {
   }
 
   let url = new URL(request.url);
-  let query = url.searchParams.get('q');
 
   if (request.method == 'POST'){
-    if(query != null){
-        return apiSearchRequest(query);
-    }else{
-        return apiRequest(request);
-    }
+    return apiRequest(request);
   }
 
   let path = url.pathname;
